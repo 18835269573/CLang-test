@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int E;
+
+struct ListNode {
+    E element;
+    struct ListNode *next;
+};
+
+typedef struct ListNode * Node;
+
+void initListNode(Node node){
+    node->next=NULL;
+}
+
+_Bool insertNode(Node head,E element ,int index){
+    if(index<1||head==NULL) return 0;
+    while(--index){
+        head= head->next;
+        if(head == NULL) return 0;
+    }
+    Node node = malloc(sizeof (struct ListNode));
+    if(node ==NULL) return 0;
+    node->element = element;
+    node->next = head->next;
+    head->next = node;
+    return 1;
+}
+
+_Bool deleteNode(Node head,int index){
+    if(index<1||head==NULL) return 0;
+    while(--index){
+        head =head->next;
+        if(head==NULL) return 0;
+    }
+    if(head->next==NULL) return 0;
+    Node tmp = head->next;
+    head->next=head->next->next;
+    free(tmp);
+    return 1;
+}
+
+void printList(Node head){
+
+    printf("-------------\n");
+    while(head->next){
+        head = head->next;
+        printf("%d ",head->element);
+    }
+    printf("\n-------------\n");
+}
+
+E * getValueByIndex(Node head,int index){
+    if(index<1||head==NULL) return 0;
+    while (index--){
+        head=head->next;
+        if(head==NULL) return 0;
+    }
+    return &(head->element);
+}
+
+int findList(Node head,E element){
+    if(head==NULL) return -1;
+    int index =0;
+    while(!head->next==NULL){
+        head = head->next;
+        index++;
+        if(head->element==element) return index;
+    }
+    return -1;
+}
+
+int getsize(Node head){
+    if(head==NULL) return 0;
+    int size;
+    while(!head->next==NULL){
+        head = head->next;
+        size++;
+    }
+    return size;
+}
+
+int main(){
+    struct ListNode head;
+    initListNode(&head);
+    for (int i = 1; i <= 5; ++i) {
+        insertNode(&head,i*100,i);
+    }
+    printList(&head);
+    deleteNode(&head,2);
+    printList(&head);
+    printf("value=%d\n", *(getValueByIndex(&head,2)));
+    printf("index=%d\n", findList(&head,200));
+    printf("size=%d\n", getsize(&head));
+    return 0;
+}
