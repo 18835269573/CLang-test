@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+typedef int E;
+struct List{
+    E * array;
+    int capacity;
+    int size;
+};
+
+typedef struct List * ArrayList;
+
+_Bool initArrayList(ArrayList list){
+    E * array = malloc(sizeof(E)*10);
+    if(array==NULL){
+        printf("init fails");
+        return 0;
+    }
+    list->array=array;
+    list->capacity=10;
+    list->size=0;
+    printf("init successfully\n");
+    return 1;
+};
+
+_Bool insertArrayList(ArrayList list,E element,int index){
+    if(index<1 || index >list->size+1) return 0;
+
+    if(list->capacity == list->size){
+        int newCapacity = list->capacity+(list->capacity>>1);
+        E * arr = realloc(list->array, sizeof(E)*10);
+        if(arr == NULL) return 0;
+        list->array=arr;
+        list->capacity = newCapacity;
+    }
+
+    for(int i= list->size;i>index-1;--i){
+        list->array[i] = list->array[i-1];
+    }
+    list->array[index-1] = element;
+    list->size++;
+    return 1;
+}
+
+void printList(ArrayList list){
+    printf("-----------------\n");
+    for(int i=0;i<list->size;++i) {
+        printf("%d ", list->array[i]);
+    }
+    printf("\n");
+    printf("-----------------\n");
+    printf("size:%d\n",list->size);
+    printf("------------------\n");
+    printf("capacity:%d\n",list->capacity);
+    printf("-------------------\n");
+}
+
+_Bool deleteArraylist(ArrayList list,int index){
+    if(index<1||index > list->size) return 0;
+    for (int i = index-1;i<list->size -1;++i )
+        list->array[i] = list->array[i+1];
+    list->size--;
+    return 1;
+}
+
+int getListSize(ArrayList list){
+    return list->size;
+}
+
+E * getListByIndex(ArrayList list,int index){
+    if(index<1||list->size<index){
+        return NULL;
+    }
+    return &list->array[index-1];
+}
+
+int  findIndexByValue(ArrayList list,E element){
+    for (int i = 0; i < list->size; ++i) {
+        if(list->array[i]==element) return i;
+    }
+    return -1;
+}
+
+int main(){
+    struct List list ;
+    initArrayList(&list);
+    insertArrayList(&list,1,1);
+    insertArrayList(&list,2,1);
+    insertArrayList(&list,3,1);
+    insertArrayList(&list,4,1);
+    insertArrayList(&list,5,1);
+    insertArrayList(&list,6,1);
+    insertArrayList(&list,7,1);
+    insertArrayList(&list,8,1);
+    insertArrayList(&list,9,1);
+    insertArrayList(&list,10,1);
+    insertArrayList(&list,11,1);
+    deleteArraylist(&list,10);
+    printf("%d\n", getListSize(&list));
+    E * element = getListByIndex(&list,3);
+    printf("%d\n",*element);
+    printf("%d\n", findIndexByValue(&list,99));
+    printList(&list);
+    return 0;
+}
