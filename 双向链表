@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int E;
+
+struct ListNode{
+    E element;
+    struct ListNode * next;
+    struct ListNode * prev;
+};
+
+typedef struct ListNode * Node;
+
+_Bool initListNode(Node head){
+    if(head ==NULL) {
+        printf("init failed\n");
+        return 0;
+    }
+    head->next=head->prev=NULL;
+    printf("init successfully:\n");
+    return 1;
+}
+
+_Bool insertListNode(Node head,E element,int index){
+    if(head==NULL||index<1) return 0;
+    while(--index){
+        head=head->next;
+        if(head==NULL) return 0;
+    }
+    Node node = malloc(sizeof (struct ListNode));
+    if(node ==NULL) return 0;
+    node->element=element;
+    if(head->next!=NULL){
+        node->next=head->next;
+        head->next->prev=node;
+    } else{
+        node->next=NULL;
+    }
+    head->next=node;
+    node->prev=head;
+    return 1;
+}
+
+_Bool deleteNode(Node head,int index){
+    if(head == NULL||index<1) return 0;
+    while(--index){
+        head = head->next;
+        if(head==NULL) return 0;
+    }
+    if(head->next==NULL) return 0;
+    Node temp = head->next;
+    if (head->next->next!=NULL) {
+        head->next->next->prev = head;
+        head->next = head->next->next;
+    } else {
+        head->next->prev=NULL;
+        head->next=NULL;
+    }
+    free(temp);
+}
+
+Node getLastPoint(Node head){
+    if(head==NULL) return NULL;
+    head=head->next;
+    while(head->next!=NULL){
+        head=head->next;
+    }
+    return head;
+}
+
+void TruePrintListNode(Node head){
+    if(head==NULL) return ;
+    head=head->next;
+    printf("\n------------------\n");
+    while(head!=NULL){
+        printf("%d<->",head->element);
+        head=head->next;
+    }
+    printf("\n------------------\n");
+}
+
+void FalsePrintListNode(Node head){
+    if(head==NULL) return ;
+    printf("\n------------------\n");
+    while(head->prev!=NULL){
+        printf("%d<->",head->element);
+        head=head->prev;
+    }
+    printf("\n------------------");
+}
+
+int main(){
+    struct ListNode head;
+    initListNode(&head);
+    for (int i=1;i<10;++i) {
+        insertListNode(&head, i*100, i);
+    }
+    TruePrintListNode(&head);
+    FalsePrintListNode(getLastPoint(&head));
+    deleteNode(&head,10);
+    TruePrintListNode(&head);
+    return 0;
+}
