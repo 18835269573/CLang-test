@@ -29,7 +29,7 @@ _Bool insertArrayList(ArrayList list,E element,int index){
 
     if(list->capacity == list->size){
         int newCapacity = list->capacity+(list->capacity>>1);
-        E * arr = realloc(list->array, sizeof(E)*10);
+        E * arr = realloc(list->array, sizeof(E)*newCapacity);
         if(arr == NULL) return 0;
         list->array=arr;
         list->capacity = newCapacity;
