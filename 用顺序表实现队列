@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int E;
+
+struct Queue{
+    E * array;
+    int capacity;
+    int front ;
+    int rear;
+};
+
+typedef struct Queue * ArrayQueue;
+
+_Bool initQueue(ArrayQueue queue){
+    queue->array= malloc(sizeof(E)*10);
+    if(queue->array ==NULL){
+        printf("init fails\n");
+        return 0;
+    }
+    queue->capacity=10;
+    queue->front=queue->rear=0;
+    printf(" Queue init successfully:\n");
+    return 1;
+}
+
+_Bool offerQueue(ArrayQueue queue,E element){
+    if(queue == NULL) return 0;
+    int pos = (queue->rear+1)%(queue->capacity);
+    if(pos == queue->front) return 0;
+    queue->rear=pos;
+    queue->array[queue->rear] = element;
+    return 1;
+}
+
+_Bool isEmpty(ArrayQueue queue){
+    if(queue == NULL) return 0;
+    return queue->front==queue->rear;
+}
+
+E pollQueue(ArrayQueue queue){
+    queue->front =(queue->front+1)%(queue->capacity);
+    return queue->array[queue->front];
+}
+
+void printQueue(ArrayQueue queue){
+    int i = queue->front;
+    printf("<<<");
+    do{
+        i = (i+1)%queue->capacity;
+        printf("%d ", (queue->array[i]));
+    }while(i!=queue->rear);
+    printf("<<<\n");
+}
+
+int main(){
+    struct Queue queue;
+    initQueue(&queue);
+    for (int i = 0; i < 5; ++i){
+        offerQueue(&queue,i*100);
+    }
+    printQueue(&queue);
+    for (int i=0;i<5;++i) {
+        printf("%d ", pollQueue(&queue));
+    }
+    printf("\n");
+}
