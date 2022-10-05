@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+typedef int E;
+
+struct LNode{
+    E element;
+    struct LNode * next;
+};
+
+typedef struct LNode * Node;
+
+struct Queue{
+    Node front, rear;
+};
+
+typedef struct Queue * LinkQueue;
+
+bool initLinkQueue(LinkQueue linkQueue){
+    if(linkQueue==NULL) return 0;
+    Node head = malloc(sizeof(struct LNode));
+    if(head ==NULL) {
+        printf("Queue int fails:\n");
+        return false;
+    }
+    printf("queue init successfully:\n");
+    linkQueue->front=linkQueue->rear=head;
+    return true;
+}
+
+bool offerQueue(LinkQueue queue,E element){
+    if(queue == NULL) return false;
+    Node node = malloc(sizeof(struct LNode));
+    if(node == NULL) return false;
+    node->element=element;
+    node->next=NULL;
+    queue->rear->next = node;
+    queue->rear = node;
+    return true;
+}
+bool isEmpty(LinkQueue queue){
+    return queue->rear==queue->front;
+}
+E pollQueue(LinkQueue queue){
+    if(queue == NULL) return false;
+    if(isEmpty(&queue)) return false;
+    Node node = queue->front->next;
+    E PollElement = node->element;
+    queue->front->next = node->next;
+    if(node == queue->rear) queue->rear = queue->front;
+    free(node);
+    return PollElement;
+}
+void printLinkQueue(LinkQueue queue){
+    if(queue == NULL) return ;
+    printf("<<<");
+    Node head = queue->front->next;
+    while(head){
+        printf("%d " ,head->element);
+        head = head->next;
+    }
+    printf("<<<\n");
+}
+int main(){
+    struct Queue queue;
+    initLinkQueue(&queue);
+    for (int i = 0; i < 5; ++i){
+        offerQueue(&queue,i*100);
+    }
+    printLinkQueue(&queue);
+    for (int i = 0; i < 5; ++i){
+        printf("%d ",pollQueue(&queue));
+    }
+    printf("\n");
+}
+
